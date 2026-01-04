@@ -6,7 +6,6 @@ def analyze_sentiment(title):
     """
     簡易情緒分析：根據標題關鍵字給分
     """
-    # 1. 定義關鍵字庫
     positive_keywords = [
         "上漲", "大漲", "飆升", "突破", "新高", "牛市", "看好", 
         "獲利", "反彈", "加倉", "抄底", "增持", "多單", 
@@ -38,7 +37,6 @@ def fetch_google_news(keyword="Bitcoin", limit=10):
     """
     爬取 Google News RSS 並回傳 List[Dict]
     """
-    # 根據關鍵字是否有中文字元，決定搜尋語言
     is_chinese = any(u'\u4e00' <= c <= u'\u9fff' for c in keyword)
     
     if is_chinese:
@@ -46,7 +44,7 @@ def fetch_google_news(keyword="Bitcoin", limit=10):
     else:
         params = "hl=en-US&gl=US&ceid=US:en"
         
-    # URL 編碼關鍵字
+
     encoded_keyword = urllib.parse.quote(keyword)
     rss_url = f"https://news.google.com/rss/search?q={encoded_keyword}&{params}"
     
@@ -66,7 +64,7 @@ def fetch_google_news(keyword="Bitcoin", limit=10):
                 link = item.link.text
                 pub_date = item.pubDate.text
                 
-                # 進行情緒分析
+                
                 sentiment = analyze_sentiment(title)
                 
                 news_list.append({

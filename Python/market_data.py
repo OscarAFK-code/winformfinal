@@ -2,8 +2,6 @@ import ccxt
 import pandas as pd
 import requests
 
-# 初始化交易所
-# 我們使用全域變數來儲存連線實例，避免每次呼叫都重新連線
 exchanges = {
     'binance': ccxt.binance({'enableRateLimit': True}),
     'okx': ccxt.okx({'enableRateLimit': True}),
