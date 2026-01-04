@@ -4,31 +4,22 @@ using System.Drawing;
 using System.Net.Http;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-// ★ 重要：必須引用圖表套件
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace final_project
 {
     public partial class Form1 : Form
     {
-        // 設定 Python Server 網址
         private const string API_URL = "http://127.0.0.1:5000/api";
 
-        // ★ Lab 3: 宣告圖表變數
         private Chart chartKLine;
 
         public Form1()
         {
             InitializeComponent();
-
-            // 初始化下拉選單內容 (防呆)
             InitializeCustomUI();
-
-            // ★ Lab 3: 動態生成圖表
             InitChartDynamically();
         }
-
-        // ==================== 資料模型 (Models) ====================
         public class PriceData
         {
             public string Coin { get; set; }
@@ -65,8 +56,6 @@ namespace final_project
             public FngData fng { get; set; }
             public List<WhaleData> whales { get; set; }
         }
-
-        // ★ Lab 4: 新增搬磚套利資料模型
         public class ArbitrageData
         {
             public string exchange_a { get; set; }
@@ -78,11 +67,8 @@ namespace final_project
             public string status { get; set; }
         }
 
-        // ==================== 初始化邏輯 ====================
-
         private void InitializeCustomUI()
         {
-            // Lab 3 UI
             if (cmbCoin.Items.Count == 0)
             {
                 cmbCoin.Items.AddRange(new string[] { "BTC/USDT", "ETH/USDT", "SOL/USDT" });
@@ -99,7 +85,6 @@ namespace final_project
                 cmbIndicator.SelectedIndex = 0;
             }
 
-            // Lab 4 UI: 設定 ComboBox 為唯讀 (只能選不能打字)
             cmbArbCoin.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
@@ -131,7 +116,6 @@ namespace final_project
             chartKLine.Series.Add(priceSeries);
         }
 
-        // ==================== Lab 1: 市場儀表板邏輯 ====================
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
             using (HttpClient client = new HttpClient())
@@ -189,7 +173,6 @@ namespace final_project
             lbl.ForeColor = coin.Change >= 0 ? Color.Green : Color.Red;
         }
 
-        // ==================== Lab 2: 新聞分析邏輯 ====================
         private async void btnSearchNews_Click(object sender, EventArgs e)
         {
             string keyword = txtSearch.Text.Trim();
@@ -238,7 +221,6 @@ namespace final_project
             }
         }
 
-        // ==================== Lab 3: 技術分析繪圖邏輯 ====================
         private async void btnDrawChart_Click_1(object sender, EventArgs e)
         {
             if (chartKLine == null) InitChartDynamically();
@@ -303,7 +285,7 @@ namespace final_project
                         }
                     }
 
-                    // 強制重繪
+                    
                     chartKLine.Invalidate();
                     chartKLine.Update();
                 }
@@ -334,9 +316,7 @@ namespace final_project
             chartKLine.Series.Add(line);
         }
 
-        // ==================== Lab 4: 搬磚套利 (Binance vs OKX) ====================
 
-        // 1. 載入幣種按鈕
         private async void btnLoadPairs_Click(object sender, EventArgs e)
         {
             using (HttpClient client = new HttpClient())
@@ -373,7 +353,6 @@ namespace final_project
             }
         }
 
-        // 2. 開啟/關閉 自動監控
         private void chkAutoMonitor_CheckedChanged(object sender, EventArgs e)
         {
             if (chkAutoMonitor.Checked)
@@ -384,13 +363,12 @@ namespace final_project
                     chkAutoMonitor.Checked = false;
                     return;
                 }
-                // 啟動計時器
+
                 timerMonitor.Start();
-                FetchArbitrageData(); // 立即執行一次
+                FetchArbitrageData();
             }
             else
             {
-                // 停止計時器
                 timerMonitor.Stop();
                 lblSpread.Text = "監控已停止";
                 lblSpread.ForeColor = Color.Black;
@@ -398,13 +376,11 @@ namespace final_project
             }
         }
 
-        // 3. 計時器 Tick 事件 (需確認介面上的 Timer 有綁定此事件)
         private void timerMonitor_Tick(object sender, EventArgs e)
         {
             FetchArbitrageData();
         }
 
-        // 4. 核心監控邏輯
         private async void FetchArbitrageData()
         {
             string selectedCoin = cmbArbCoin.Text;
@@ -423,13 +399,12 @@ namespace final_project
                         return;
                     }
 
-                    // 更新介面
                     lblBinance.Text = $"{data.exchange_a}: ${data.price_a:N4}";
                     lblKraken.Text = $"{data.exchange_b}: ${data.price_b:N4}";
 
                     lblSpread.Text = $"價差: ${Math.Abs(data.spread):N4} ({Math.Abs(data.spread_pct):N2}%)";
 
-                    // 警報判斷
+       
                     double threshold = (double)numThreshold1.Value;
                     if (Math.Abs(data.spread) >= threshold)
                     {
@@ -450,7 +425,6 @@ namespace final_project
             }
         }
 
-        // 其他空白事件 (不需刪除，留著沒關係，避免報錯)
         private void textBox1_TextChanged(object sender, EventArgs e) { }
         private void label1_Click(object sender, EventArgs e) { }
         private void lblTitle_Click(object sender, EventArgs e) { }
