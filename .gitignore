@@ -1,0 +1,16 @@
+# C# 垃圾過濾
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.suo
+
+# Python 垃圾過濾
+__pycache__/
+*.py[cod]
+venv/
+env/
+.env
+
+# 敏感資料
+config.json
